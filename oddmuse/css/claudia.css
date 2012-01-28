@@ -1,0 +1,199 @@
+div.message { display:none; }
+
+textarea { width:100%; }
+
+body { background-color:rgb(255,250,240); color:rgb(139,69,19); }
+
+img.logo {
+	float:right;
+	margin:0;
+	padding:0;
+	border:1px solid #000;
+	background-color:rgb(255,250,240);
+}
+
+hr {
+	clear: both;
+}
+
+a {
+ color:firebrick;
+}
+
+h1 a {
+ color:DarkOliveGreen;
+ text-decoration:none;
+}
+
+h1 {
+ font-size:48pt;
+ color:DarkOliveGreen;
+ background-color:LemonChiffon;
+ padding:0 0.5ex;
+ margin:0 0 1ex 0;
+ border: 2px solid #bdb7bd; /* DarkKhaki */
+ clear:both;
+}
+
+h2 {
+ color:DarkOliveGreen;
+ background-color:LemonChiffon;
+ font-size:22px;
+ padding:0 0.5ex;
+ margin-top:3ex;
+ margin-bottom:3ex;
+ border: 2px solid DarkKhaki;
+ clear:both;
+}
+
+h3 {
+ color:black;
+ font-size:18px;
+ padding:2px;
+ margin-top:4ex;
+ border-bottom: 1px solid black;
+ clear:both;
+}
+
+h4 {
+ color:#666;
+ font-size:18px;
+ padding:2px;
+ margin-top:5px;
+ text-decoration:underline;
+ clear:both;
+}
+
+h5 {
+    font-size:14pt;
+    color:DarkOliveGreen;
+    padding: 0;
+    margin: 0;
+}
+
+div.diff { padding-left:5%; padding-right:5%; }
+div.old { background-color:#FFFFAF; color:#000; }
+div.new { background-color:#CFFFCF; color:#000; }
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div.message { background-color:#FEE; color:#000; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+
+table.user { 
+    border-collapse:collapse;
+}
+table.user tr td {
+    border:solid 1px rgb(139,69,19);
+    padding:0.5ex;
+    margin:0;
+    text-align:left;
+}
+form table td {
+    padding:5px;
+}
+table.anmeldung td { border-style:none; padding:1ex;}
+
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
+
+div.rss { background-color:#EEF; color:#000; }
+div.rss a:link { background-color:#EEF; color:#00F; }
+div.rss a:visited { background-color:#EEF; color:#A0A; }
+div.rss a:active { background-color:#EEF; color:#F00; }
+
+img.left { float:left; margin:1em; }
+img.right { float:right; margin:1em; }
+
+div.pic table { display:inline; }
+div.pic table.rechts { float:right; }
+div.pic table.links { float:left; }
+
+/* fussbereich unsichtbar ausser fuer admin */
+
+div.footer { display:none; }
+body.admin div.footer { display:block; }
+div.content + hr { display:none; }
+
+div.refer { display:none; }
+
+body.admin div.refer { display:block; }
+
+/* header */
+
+div.header {
+    background-color:LemonChiffon;
+    margin:0;
+    padding:0;
+    border-bottom: 2px solid DarkKhaki;
+    width: 100%;
+    text-align: center;
+}
+div.header h1 {
+    background-image: url("/claudia/pics/ornament-breit.png");
+    background-repeat: repeat-x;
+    background-position: 0 2px;
+    margin: none;
+    padding: 1.5ex 1ex 0 1ex;
+    border: none;
+    font-size: 32pt;
+}
+
+/* body and content layout: leave big margin on the left. */
+
+html, body {
+    margin: 0;
+    padding:0;
+}
+div.content, div.footer, div.rc {
+    margin:0 0 0 25ex;
+    padding:2ex;
+}
+
+/* no gotobar */
+
+div.header span.gotobar { display:none; }
+
+/* sidebar */
+
+div.sidebar {
+    display:block;
+    font-size:small;
+    position:absolute;
+    top:30ex;
+    left:1ex;
+    text-align: right;
+}
+div.sidebar ul {
+    padding:0;
+    margin:0;
+}
+div.sidebar li {
+    list-style-type:none;
+    padding: 0.2em;
+}
+div.sidebar a {
+    text-decoration: none;
+}
+
+/* printing */
+
+@media print
+{
+    body {
+	font-size:10pt;
+	color:black;
+	margin:0;
+	border:none;
+    }
+    pre, code, tt { font-size:8pt; font-family: Courrier, monospace;} 
+    h1, h2, h3, h4, h5 { font-size:14pt; color:black; }
+    h1 { font-size: 16pt; padding: 0; }
+    h1, h2 { border:none; }
+    h1 a { color:black; }
+    a { text-decoration:none; color:black; }
+    div.header span.gotobar { display:none; }
+    span.specialdays { display:none; }
+    div.refer, div.footer, div.near, div.definition, div.sister, div.sidebar {
+	display:none;
+    }
+}

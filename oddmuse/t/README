@@ -1,0 +1,210 @@
+
+
+  Writing Tests
+  =============
+
+  Here's how to write tests.
+
+  1. Create a new file in the t directory, called foo.t. Start with
+     the following lines:
+
+	require 't/test.pl';
+	package OddMuse;
+	use Test::More tests => $num
+	clear_pages();
+
+     This will load the testing library, make all its functions
+     available to you, announce that you plan to make $num tests, and
+     clear all the pages from the test wiki.
+
+     The test wiki will be created in /tmp/oddmuse.
+
+  2. The wiki is accessed via the command line only. You don't need to
+     have your code installed on a webserver! Just run the test from
+     the parent directory:
+
+	perl t/foo.t
+
+  3. Write $num tests. :)
+
+  4. To examine the situation after having run some tests, you can
+     also call the script from the command line. The only problem is
+     that the tests use a specific data directory that you need to
+     provide via an environment variable:
+
+        WikiDataDir=test-data perl wiki.pl action=index raw=1
+
+  add_module, remove_module, and remove_rule
+  ------------------------------------------
+
+  Load a module before you run any tests:
+
+    add_module('usemod.pl');
+
+  If the module has important setup code, you might have to add the
+  following:
+
+    InitVariables();
+
+  The reason is this: If you add a module and the run the script
+  again, you're fine. But if you run tests that don't invoke another
+  copy of the script, then the init code will not have run.
+
+  Modules and rules need rarely be removed, since every *.t file
+  starts in a new process.  If you then want to run additional tests
+  without the module you added (in the same *.t file!), then remove
+  both the module and the rules it added. You'll have to do this
+  manually, unfortunately.
+
+    remove_module('usemod.pl');
+    remove_rule(\&UsemodRule);
+    
+
+
+  update_page
+  -----------
+
+    $page = update_page($pagename, $content);
+    update_page($pagename, $content, $summary, $minor, $admin, @rest);
+
+  @rest is a list of parameter=value string pairs:
+
+    @rest = ('username=joe', 'ns=Moore');
+
+  If updating the page resultet in a redirect, the redirect is stored
+  in the variable $redirect, and you still get the result page
+  returned.
+
+    test_page($redirect, split('\n',<<'EOT'));
+    banned text
+    wiki administrator
+    matched
+    See .*BannedContent.* for more information
+    EOT
+
+  You can even create pages containing file uploads directly:
+
+    $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
+
+
+  get_page
+  --------
+
+    $page = get_page('action=calendar');
+    $page = get_page('action=rc all=1 showedit=1');
+    $page = get_page('action=rc', 'all=1', 'showedit=1');
+    test_page(get_page('action=all'),
+	      'restricted to administrators');
+
+  Return the text of the page. The parameters are the parameters
+  available to you from the command line when using the CGI library:
+
+    keyword1 keyword2 keyword3
+    keyword1+keyword2+keyword3
+    name1=value1 name2=value2
+    name1=value1&name2=value2
+    "name1='I am a long value'" "name2=two\ words"
+    /your/path/here?name1=value1&name2=value2
+
+
+
+  run_tests
+  ---------
+
+  Takes a list of alternating input and output strings, applies rules
+  (and thus @MyRules) to input and compares it to the output. If you
+  have html attributes in the output you want to test, use
+  xpath_run_tests, because the order of the attributes is not
+  guaranteed and varies with CGI library version.
+
+    run_tests(q{"Get lost!", they say.},
+	      q{&#x201c;Get lost!&#x201d;, they say.});
+
+    run_tests(split('\n', <<'EOT'));
+    input1
+    output1
+    input2
+    output2
+    EOT
+
+  Newline excapes \n in the input and output are translated to real
+  newlines when running the tests.
+
+    run_tests(split('\n',<<'EOT'));
+    * ''one\n** two
+    <ul><li><em>one</em><ul><li>two</li></ul></li></ul>
+    EOT
+
+
+
+  test_page and test_page_negative
+  --------------------------------
+
+  Tests any string for regular expression matches:
+
+    test_page($string, $regexp1, $regexp2, ...);
+    test_page(update_page($pagename, $content), $re1, $re2);
+
+  Or make sure that none of the regular expressions match:
+
+    test_page_negative($page,
+		       "rollback",
+		       "Rollback",
+		       "EvilPage",
+		       "AnotherEvilPage",
+		      );
+
+
+
+  xpath_run_tests
+  ---------------
+
+  This is the equivalent of run_tests using XPath instead of simple
+  string comparison.  It takes a list of alternating input and xpath
+  tests, applies rules (and thus @MyRules) to the input and applies
+  the test to the output.
+
+    xpath_run_tests(split('\n',<<'EOT'));
+    WikiWord
+    //a[@class="edit"][@title="Click to edit this page"]
+    This is a [:day for fun and laughter].
+    //a[@class="anchor"][@name="day_for_fun_and_laughter"]
+    EOT
+
+  XPath is harder to write, but is ideal when the output contains tags
+  with more than one attribute, since the order of attributes is
+  undefined. And you don't even have to test for all the attributes.
+
+
+
+  xpath_test and negative_xpath_test
+  ----------------------------------
+
+  The equivalent of test_page, but using xpath instead of exact
+  matches.
+
+
+    xpath_test(get_page('action=all pwd=foo'),
+	     '//p/a[@href="#HomePage"][text()="HomePage"]',
+	     '//h1/a[@name="foo"][text()="foo"]',
+	     '//a[@class="local"][@href="#bar"][text()="bar"]',
+	     '//h1/a[@name="bar"][text()="bar"]')
+
+  And the same thing for negative matches, of course:
+
+    negative_xpath_test($page, '//h1/a[not(text())]');
+
+
+  run_macro_tests
+  ---------------
+
+    run_macro_tests(split('\n',<<'EOT'));
+    $input1
+    $output2
+    $input2
+    $output2
+    EOT
+
+  Tests @MyMacros.
+
+
